@@ -1,0 +1,54 @@
+https://filesender.rnp.br/?vid=172eec85-fe03-7bc8-6bdb-0000536c6719
+
+
+Para aqueles que executam via Windows e tiveram problema de "kernel panic",
+sugiro utilizar essa maquina:
+
+   - Acessar:
+   https://github.com/mininet/mininet/wiki/Mininet-VM-Images
+
+   - Escolher a imagem:  Mininet 2.2.2 on Ubuntu 14.04 LTS - 32 bit (recommended
+     for Windows users using VirtualBox or Hyper-V)
+
+Apos iniciar essa VM, voce nao tera a GUI (Openbox). Para habilitar a GUI, siga
+os passos abaixo (ref: http://wiki.dcc.ufba.br/Grade/OpenWiMeshSetupDevEnv).
+
+1 - Instalar os pacotes:
+
+sudo apt-get install install xterm vim htop iftop iotop iperf tcpdump tcpreplay xinit rcconf openbox lxpanel lxde-icon-theme nodm xscreensaver xfig sudo desktop-base menu pcmanfm git subversion imagemagick midori evince tree
+
+2 - Configurar o NODM:
+
+dpkg-reconfigure nodm
+
+No dialogo responda as peguntas com as seguintes respostas:
+ - Iniciar o nodm na inicialização do sistema: sim
+ - Usuário para o qual iniciar uma sessão: mininet
+ - Número de vt mais baixo no qual o X pode iniciar: 7
+ - Opções para o servidor X: -nolisten tcp: ok
+ - Tempo minimo (em segundos) para um sessão ser considerada OK: 60
+ - Sessão X a usar: /etc/X11/Xsession 
+
+3 - Para configurar a área de trabalho do lxpanel basta executar os seguintes comandos com o usuário mininet: 
+
+mkdir -p .config/openbox/
+cat > .config/openbox/autostart.sh <<EOF
+(sleep 2s && display -size 1280x800 -window root /usr/share/images/desktop-base/joy-wallpaper_1280x1024.svg) &
+(sleep 2s && xscreensaver -no-splash) &
+(sleep 2s && lxpanel --profile openbox) &
+EOF
+mkdir -p .config/lxpanel/openbox/
+cat > .config/lxpanel/openbox/config <<EOF
+[Command]
+FileManager=pcmanfm %s
+Terminal=xterm -e
+EOF
+mkdir -p .config/lxpanel/openbox/panels/
+
+4 - copiar arquivos de config do Openbox:
+
+wget http://wiki.dcc.ufba.br/pub/Grade/OpenWiMeshSetupDevEnv/bottom
+wget http://wiki.dcc.ufba.br/pub/Grade/OpenWiMeshSetupDevEnv/rc.xml
+
+mv bottom .config/lxpanel/openbox/panels/
+mv rc.xml .config/openbox/
